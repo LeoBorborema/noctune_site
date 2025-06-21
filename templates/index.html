@@ -118,11 +118,6 @@
       </select>
     </div>
 
-    <div class="input-group">
-      <label for="folder">Pasta de destino:</label>
-      <input type="text" id="folder" placeholder="Clique para escolher a pasta..." readonly onclick="escolherPasta()" />
-    </div>
-
     <button onclick="iniciarDownload()">Baixar</button>
 
     <div class="progress-bar" id="progressBar">
@@ -133,20 +128,11 @@
   </main>
 
   <script>
-    function escolherPasta() {
-      fetch('/selecionar_pasta')
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('folder').value = data.caminho;
-        });
-    }
-
     function iniciarDownload() {
       const url = document.getElementById('url').value;
       const format = document.getElementById('format').value;
-      const folder = document.getElementById('folder').value;
 
-      if (!url || !folder) {
+      if (!url) {
         alert("Preencha todos os campos!");
         return;
       }
@@ -157,13 +143,13 @@
       fetch('/baixar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, format, folder })
+        body: JSON.stringify({ url, format })
       })
       .then(response => response.json())
       .then(data => {
         if (data.status === 'success') {
           document.getElementById('progressFill').style.width = '100%';
-          alert('Download concluído!');
+          alert('Download concluído! Os arquivos foram salvos na pasta padrão do servidor.');
         } else {
           alert('Erro: ' + data.message);
           document.getElementById('progressBar').style.display = 'none';
@@ -185,4 +171,3 @@
   </script>
 </body>
 </html>
-
