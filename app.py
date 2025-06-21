@@ -26,6 +26,7 @@ def baixar():
         "outtmpl": os.path.join(DOWNLOAD_DIR, "%(title)s.%(ext)s"),
         "postprocessors": [],
         "quiet": True,
+        "geo_bypass": True,  # tenta ignorar bloqueios regionais
     }
 
     if formato == "mp3":
@@ -43,3 +44,6 @@ def baixar():
         return jsonify({"status": "success"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)})
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
