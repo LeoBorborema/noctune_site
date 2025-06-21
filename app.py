@@ -26,11 +26,10 @@ def baixar():
         "outtmpl": os.path.join(DOWNLOAD_DIR, "%(title)s.%(ext)s"),
         "postprocessors": [],
         "quiet": True,
-        "geo_bypass": True,                  # Ignorar bloqueios regionais
-        "ratelimit": 1000000,               # Limitar velocidade ~1MB/s para não sobrecarregar
-        "sleep_interval_requests": 1,       # Pausa 1s entre requisições para reduzir bloqueios
-        "sleep_interval": 1,                # Pausa 1s entre downloads, se houver múltiplos
-        # "proxy": "http://seu_proxy_aqui:porta"  # Descomente e configure se usar proxy
+        "geo_bypass": True,
+        "ratelimit": 1000000,
+        "sleep_interval_requests": 5,  # pausa 5 segundos entre requisições
+        "sleep_interval": 5,           # pausa 5 segundos entre downloads
     }
 
     if formato == "mp3":
