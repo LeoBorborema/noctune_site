@@ -1,187 +1,52 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Noctune Downloader</title>
-  <link rel="icon" href="{{ url_for(filename='favicon.ico') }}" type="image/x-icon">
+<!-- Removido o bloco inteiro do folder -->
+<!--
+<div class="input-group">
+  <label for="folder">Pasta de destino:</label>
+  <input type="text" id="folder" placeholder="Clique para escolher a pasta..." readonly onclick="escolherPasta()" />
+</div>
+-->
 
-  <style>
-    body {
-      background-color: #121212;
-      color: #f0f0f0;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+<!-- Também remova a função escolherPasta() do script -->
+
+<script>
+  function iniciarDownload() {
+    const url = document.getElementById('url').value;
+    const format = document.getElementById('format').value;
+
+    if (!url) {
+      alert("Preencha todos os campos!");
+      return;
     }
 
-    .logo {
-      font-size: 3rem;
-      font-weight: 700;
-      color: #d9b233;
-      text-shadow: 0 0 12px rgba(217, 178, 51, 0.6);
-      margin: 2rem 0 1.5rem 0;
-      user-select: none;
-    }
+    document.getElementById('progressBar').style.display = 'block';
+    document.getElementById('progressFill').style.width = '0%';
 
-    main {
-      padding: 2rem;
-      max-width: 500px;
-      width: 100%;
-    }
-
-    .input-group {
-      margin-bottom: 1.5rem;
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    input[type="text"], select {
-      padding: 0.8rem;
-      background-color: #1a1a1a;
-      color: #fff;
-      border: 1px solid #444;
-      border-radius: 8px;
-      font-size: 1rem;
-      box-sizing: border-box;
-      width: 100%;
-    }
-
-    button {
-      width: 100%;
-      padding: 1.2rem;
-      background: linear-gradient(90deg, #d9b233, #b34a2a);
-      border: none;
-      color: #121212;
-      font-weight: bold;
-      font-size: 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(179, 74, 42, 0.6);
-      transition: background 0.3s, color 0.3s;
-    }
-
-    button:hover {
-      background: linear-gradient(90deg, #b34a2a, #d9b233);
-      color: #fff;
-      box-shadow: 0 6px 10px rgba(217, 178, 51, 0.8);
-    }
-
-    .progress-bar {
-      width: 100%;
-      background-color: #2e2e2e;
-      border-radius: 3px;
-      overflow: hidden;
-      height: 6px;
-      margin-top: 1rem;
-      display: none;
-    }
-
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, #d9b233, #b34a2a);
-      transition: width 0.3s;
-    }
-
-    .footer {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #777;
-      margin-top: 2rem;
-    }
-  </style>
-</head>
-<body>
-  <div class="logo">Noctune</div>
-
-  <main>
-    <div class="input-group">
-      <label for="url">URL do vídeo:</label>
-      <input type="text" id="url" placeholder="Cole aqui a URL do vídeo..." />
-    </div>
-
-    <div class="input-group">
-      <label for="format">Formato:</label>
-      <select id="format">
-        <option value="mp4">MP4 (vídeo)</option>
-        <option value="mkv">MKV (vídeo)</option>
-        <option value="mp3">MP3 (áudio)</option>
-      </select>
-    </div>
-
-    <div class="input-group">
-      <label for="folder">Pasta de destino:</label>
-      <input type="text" id="folder" placeholder="Clique para escolher a pasta..." readonly onclick="escolherPasta()" />
-    </div>
-
-    <button onclick="iniciarDownload()">Baixar</button>
-
-    <div class="progress-bar" id="progressBar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-
-    <div class="footer">Desenvolvido por Léo Borborema | Projeto Noctune</div>
-  </main>
-
-  <script>
-    function escolherPasta() {
-      fetch('/selecionar_pasta')
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('folder').value = data.caminho;
-        });
-    }
-
-    function iniciarDownload() {
-      const url = document.getElementById('url').value;
-      const format = document.getElementById('format').value;
-      const folder = document.getElementById('folder').value;
-
-      if (!url || !folder) {
-        alert("Preencha todos os campos!");
-        return;
-      }
-
-      document.getElementById('progressBar').style.display = 'block';
-      document.getElementById('progressFill').style.width = '0%';
-
-      fetch('/baixar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, format, folder })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          document.getElementById('progressFill').style.width = '100%';
-          alert('Download concluído!');
-        } else {
-          alert('Erro: ' + data.message);
-          document.getElementById('progressBar').style.display = 'none';
-        }
-      })
-      .catch(() => {
-        alert('Erro ao conectar ao servidor.');
+    fetch('/baixar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, format })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        document.getElementById('progressFill').style.width = '100%';
+        alert('Download concluído! Os arquivos foram salvos na pasta padrão do servidor.');
+      } else {
+        alert('Erro: ' + data.message);
         document.getElementById('progressBar').style.display = 'none';
-      });
+      }
+    })
+    .catch(() => {
+      alert('Erro ao conectar ao servidor.');
+      document.getElementById('progressBar').style.display = 'none';
+    });
 
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += 10;
-        if (progress <= 90)
-          document.getElementById('progressFill').style.width = `${progress}%`;
-        else clearInterval(interval);
-      }, 400);
-    }
-  </script>
-</body>
-</html>
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      if (progress <= 90)
+        document.getElementById('progressFill').style.width = `${progress}%`;
+      else clearInterval(interval);
+    }, 400);
+  }
+</script>
